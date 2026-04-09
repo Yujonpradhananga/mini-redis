@@ -28,9 +28,6 @@ async fn main() {
 
 async fn process(socket: TcpStream, db: Db) {
     use mini_redis::Command::{self, Get, Set};
-
-    // Connection, provided by `mini-redis`, handles parsing frames from
-    // the socket
     let mut connection = Connection::new(socket);
 
     while let Some(frame) = connection.read_frame().await.unwrap() {
@@ -50,8 +47,6 @@ async fn process(socket: TcpStream, db: Db) {
             }
             cmd => panic!("unimplemented {:?}", cmd),
         };
-
-        // Write the response to the client
         connection.write_frame(&response).await.unwrap();
     }
 }
